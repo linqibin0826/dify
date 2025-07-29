@@ -597,8 +597,11 @@ def _extract_text_from_vtt(vtt_bytes: bytes) -> str:
 
         for i in range(1, len(raw_results)):
             spk, txt = raw_results[i]
-            if spk == None:
-                merged_results.append((None, current_text))
+            if spk is None:
+                # finalize previous speaker's segment and start a new one with
+                # unknown speaker
+                merged_results.append((current_speaker, current_text))
+                current_speaker, current_text = None, txt
                 continue
 
             if spk == current_speaker:
